@@ -1,266 +1,249 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>User Preferences</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f9f9f9;
-        margin: 0;
-        padding: 0;
-    }
-    nav {
-        background-color: #4CAF50;
-        padding: 10px;
-        text-align: center;
-    }
-    nav a {
-        color: white;
-        text-decoration: none;
-        margin: 0 15px;
-        font-size: 18px;
-    }
-    nav a:hover {
-        text-decoration: underline;
-    }
-    #app {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: white;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    .container {
-        padding: 20px;
-        text-align: center;
-    }
-    button {
-        margin: 10px;
-        padding: 10px 20px;
-        font-size: 1em;
-        cursor: pointer;
-    }
-    #sampleText {
-        font-size: 16px;
-    }
-    #imageAdjuster img {
-        width: 300px;
-        height: auto;
-        transition: width 0.3s ease;
-    }
-    .btn-customise {
-        padding: 10px 15px;
-        font-size: 12px;
-    }
-    .layout-options div {
-        display: inline-block;
-        border: 1px solid #ccc;
-        padding: 10px;
-        margin: 10px;
-        cursor: pointer;
-    }
-</style>
+    <title>UI Preferences Study</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        #sampleText {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        #sampleImage {
+            height: auto;
+            display: block;
+            max-width: 100%;
+            width: 250px;
+        }
+
+        iframe {
+            width: 100%;
+            height: 400px;
+            border: none;
+        }
+
+        /* Popup styles */
+        .popup {
+            display: none;
+            position: fixed;
+            bottom: 20px; 
+            left: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            max-width: 90%; /* Ensure popup doesn't exceed screen width on small screens */
+        }
+
+        .popup-content {
+            max-width: 500px;
+            overflow-y: auto;
+        }
+           
+        .close-button {
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        #goToFormButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 600px) {
+            .controls {
+                justify-content: flex-start; /* Align controls to the left on smaller screens */
+            }
+            #goToFormButton {
+                display: none;
+            }
+
+            .popup {
+                width: calc(100% - 40px );
+                max-width: none;
+                left: 20px;
+                bottom: 20px;
+                box-sizing: border-box; /* Include padding and border in the element's total width and height */
+            }
+         }
+
+         #instructionsPopup { /* ensures the instructions popup isn't affected by max-width set for sizePopup */
+            max-width: 500px;
+        }
+
+
+    </style>
 </head>
 <body>
+    <div>
+        <h1>Welcome to my survey</h1>
+        <a href="#" id="instructionsLink">Click here for instructions and data policy</a>
+    </div>
 
-<!-- Navbar -->
-<nav>
-    <a href="#" onclick="goToHome()">Home</a>
-    <a href="#" onclick="goToAim()">Aim</a>
-    <a href="#" onclick="goToContact()">Contact Me</a>
-</nav>
 
-<div id="app">
-    <!-- Dynamic content will be injected here -->
-</div>
+    <div id="instructionsPopup" class="popup">
+        <span class="close-button" onclick="closePopup()">&times;</span>
+        <div class="popup-content">
+            <h2>Instructions</h2>
+            <p>Use the sliders or buttons to adjust the size of the text and image to your preference. Then, proceed to fill out the Google Form below.</p>
+         </div>
+    </div>
+
+    <div class="container">
+        <div class="controls">
+            <label for="textSizeSlider">Text Size: <span id="textSize">16</span>px</label>
+            <input type="range" min="10" max="50" value="16" id="textSizeSlider">
+            <button onclick="adjustText(-1)">-</button>
+            <button onclick="adjustText(1)">+</button>
+        </div>
+
+        <div class="sample-text" id="sampleText">
+            Sample text for testing readability
+        </div>
+
+        <div class="controls" style="padding-top: 10%;">
+            <label for="imageSizeSlider">Image Size: <span id="imageScale">100</span>%</label>
+            <input type="range" min="50" max="200" value="100" id="imageSizeSlider">
+            <button onclick="adjustImage(-10)">-</button>
+            <button onclick="adjustImage(10)">+</button>
+        </div>
+
+        <img src="sample.jpeg" alt="Houses" id="sampleImage" class="sample-image">
+
+        <button id="goToFormButton">Go to Form</button>
+
+        <div id="sizePopup" class="popup">
+        <div class="popup-content">
+            Chosen text size: <span style="color: rgb(40, 13, 105);" id="popupTextSize"></span>px<br>
+            Chosen image size: <span style="color: rgb(40, 13, 105);" id="popupImageScale"></span>%
+            <p style="color: rgb(89, 87, 94);"> If you want to change the size</p>
+            <p style="color: rgb(89, 87, 94);"> simply scroll up</p>
+            </div>
+        </div>
+
+        <iframe style="height: 1000px; margin-top: 10%;" src="https://docs.google.com/forms/d/e/1FAIpQLSdC_bE3daA3xs5yz-ULVJY_LYPHItZp9wMoK_0YXM_KXsKOWg/viewform?usp=header" title="Google Form"></iframe>
+    </div>
 
 <script>
-    // State to store user preferences
-    const userPreferences = {
-        fontSize: 16,
-        imageSize: 300,
-        buttonCustomisation: {
-            backgroundColor: "#4CAF50",
-            textColor: "#FFFFFF",
-            size: "medium",
-        },
-        selectedLayout: 'Layout 1'
-    };
+    const textSizeSlider = document.getElementById('textSizeSlider');
+    const textSizeDisplay = document.getElementById('textSize');
+    const sampleText = document.getElementById('sampleText');
 
-    // Pages
-    const homePage = `
-        <div class="container">
-            <h1>Welcome to User Preferences!</h1>
-            <p>This test will help you customize and select your preferences for various web elements.</p>
-            <button onclick="goToFontAdjuster()">Start</button>
-        </div>
-    `;
+    textSizeSlider.addEventListener('input', () => {
+        const newSize = textSizeSlider.value;
+        textSizeDisplay.textContent = newSize;
+        sampleText.style.fontSize = newSize + 'px';
+    });
 
-    const aimPage = `
-        <div class="container">
-            <h1>Our Aim</h1>
-            <p>To understand user preferences for web elements, including font size, image size, button styling, and layout selection.</p>
-            <button onclick="goToHome()">Back to Home</button>
-        </div>
-    `;
+    function adjustText(change) {
+        let fontSize = parseInt(textSizeDisplay.textContent);
+        fontSize += change;
 
-    const contactPage = `
-        <div class="container">
-            <h1>Contact Me</h1>
-            <p>If you have any questions or suggestions, feel free to reach out!</p>
-            <p>Email: example@example.com</p>
-            <button onclick="goToHome()">Back to Home</button>
-        </div>
-    `;
+        fontSize = Math.max(10, Math.min(50, fontSize));
 
-    const fontAdjuster = `
-        <div class="container">
-            <h1>Font Size: <span id="fontSizeDisplay">16</span></h1>
-            <p id="sampleText">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            <button onclick="increaseFont()">Increase Font</button>
-            <button onclick="decreaseFont()">Decrease Font</button>
-            <button onclick="goToImageAdjuster()">Next</button>
-        </div>
-    `;
-
-    const imageAdjuster = `
-        <div class="container" id="imageAdjuster">
-            <h1>Image Size Adjuster</h1>
-            <img src="sunflowers.jpg" alt="Sample Image" id="adjustableImage">
-            <br>
-            <button onclick="increaseImageSize()">Increase Size</button>
-            <button onclick="decreaseImageSize()">Decrease Size</button>
-            <button onclick="goToButtonPicker()">Next</button>
-        </div>
-    `;
-
-    const buttonPicker = `
-        <div class="container" id="buttonPicker">
-            <h1>Customise Button</h1>
-            <button id="customButton" class="btn-customise" style="background-color: #4CAF50; color: #FFFFFF;">Sample Button</button>
-            <br>
-            <label>Background Color: <input type="color" id="btnBackgroundColor" value="#4CAF50" onchange="updateButtonBackgroundColor()"></label>
-            <br>
-            <label>Text Color: <input type="color" id="btnTextColor" value="#FFFFFF" onchange="updateButtonTextColor()"></label>
-            <br>
-            <button onclick="goToLayoutPicker()">Next</button>
-        </div>
-    `;
-
-    const layoutPicker = `
-        <div class="container" id="layoutPicker">
-            <h1>Choose a Layout</h1>
-            <div class="layout-options">
-                <div onclick="selectLayout('Layout 1')">Layout 1</div>
-                <div onclick="selectLayout('Layout 2')">Layout 2</div>
-                <div onclick="selectLayout('Layout 3')">Layout 3</div>
-            </div>
-            <button onclick="goToFormPage()">Next</button>
-        </div>
-    `;
-
-    const formPage = `
-        <div class="container">
-            <h1>Submission Page</h1>
-            <p>Here are your preferences:</p>
-            <ul>
-                <li>Font Size: ${userPreferences.fontSize}px</li>
-                <li>Image Size: ${userPreferences.imageSize}px</li>
-                <li>Button Background Color: ${userPreferences.buttonCustomisation.backgroundColor}</li>
-                <li>Button Text Color: ${userPreferences.buttonCustomisation.textColor}</li>
-                <li>Chosen Layout: ${userPreferences.selectedLayout}</li>
-            </ul>
-            <iframe src="https://docs.google.com/forms/d/e/your-google-form-id-here/viewform" width="100%" height="600px"></iframe>
-        </div>
-    `;
-
-    // Navigation Functions
-    function goToHome() {
-        document.getElementById('app').innerHTML = homePage;
+        textSizeDisplay.textContent = fontSize;
+        sampleText.style.fontSize = fontSize + 'px';
+        textSizeSlider.value = fontSize;
     }
 
-    function goToAim() {
-        document.getElementById('app').innerHTML = aimPage;
+
+    let imageScale = 100;
+    const imageSizeSlider = document.getElementById('imageSizeSlider');
+    const imageScaleDisplay = document.getElementById('imageScale');
+    const sampleImage = document.getElementById('sampleImage');
+
+    imageSizeSlider.addEventListener('input', () => {
+        const newScale = imageSizeSlider.value;
+        imageScaleDisplay.textContent = newScale;
+        imageScale = newScale;
+        sampleImage.style.width = (250 * newScale / 100) + 'px';
+    });
+
+
+
+    function adjustImage(change) {
+        imageScale += change;
+        imageScale = Math.max(50, Math.min(200, imageScale));
+
+        imageScaleDisplay.textContent = imageScale;
+        sampleImage.style.width = (250 * imageScale / 100) + 'px';
+        imageSizeSlider.value = imageScale;
     }
 
-    function goToContact() {
-        document.getElementById('app').innerHTML = contactPage;
+     const instructionsLink = document.getElementById('instructionsLink');
+    const instructionsPopup = document.getElementById('instructionsPopup');
+
+    instructionsLink.addEventListener('click', (event) => {
+        event.preventDefault();
+        instructionsPopup.style.display = 'block';
+
+    });
+
+    function closePopup() {
+        instructionsPopup.style.display = 'none';
     }
 
-    function goToFontAdjuster() {
-        document.getElementById('app').innerHTML = fontAdjuster;
-    }
+            // ... (Your existing JavaScript)
 
-    function goToImageAdjuster() {
-        document.getElementById('app').innerHTML = imageAdjuster;
-    }
+            const goToFormButton = document.getElementById('goToFormButton');
+        const formIframe = document.querySelector('iframe');
+        const sizePopup = document.getElementById('sizePopup');
+        const popupTextSize = document.getElementById("popupTextSize");
+        const popupImageScale = document.getElementById("popupImageScale");
 
-    function goToButtonPicker() {
-        document.getElementById('app').innerHTML = buttonPicker;
-    }
 
-    function goToLayoutPicker() {
-        document.getElementById('app').innerHTML = layoutPicker;
-    }
+        goToFormButton.addEventListener('click', () => {
+            formIframe.scrollIntoView({ behavior: 'smooth' });
+            // Display popup with selected size values
+            popupTextSize.textContent = textSizeDisplay.textContent;
+            popupImageScale.textContent = imageScaleDisplay.textContent;
+            sizePopup.style.display = 'block';
+        });
 
-    function goToFormPage() {
-        document.getElementById('app').innerHTML = formPage;
-    }
 
-    // Font Adjuster Functions
-    function increaseFont() {
-        userPreferences.fontSize += 2;
-        updateFontSize();
-    }
-
-    function decreaseFont() {
-        userPreferences.fontSize -= 2;
-        updateFontSize();
-    }
-
-    function updateFontSize() {
-        document.getElementById('sampleText').style.fontSize = `${userPreferences.fontSize}px`;
-        document.getElementById('fontSizeDisplay').textContent = userPreferences.fontSize;
-    }
-
-    // Image Adjuster Functions
-    function increaseImageSize() {
-        userPreferences.imageSize += 20;
-        updateImageSize();
-    }
-
-    function decreaseImageSize() {
-        userPreferences.imageSize -= 20;
-        updateImageSize();
-    }
-
-    function updateImageSize() {
-        document.getElementById('adjustableImage').style.width = `${userPreferences.imageSize}px`;
-    }
-
-    // Button Picker Functions
-    function updateButtonBackgroundColor() {
-        const color = document.getElementById('btnBackgroundColor').value;
-        userPreferences.buttonCustomisation.backgroundColor = color;
-        document.getElementById('customButton').style.backgroundColor = color;
-    }
-
-    function updateButtonTextColor() {
-        const color = document.getElementById('btnTextColor').value;
-        userPreferences.buttonCustomisation.textColor = color;
-        document.getElementById('customButton').style.color = color;
-    }
-
-    // Layout Picker Functions
-    function selectLayout(layout) {
-        userPreferences.selectedLayout = layout;
-        alert(`You selected ${layout}`);
-    }
-
-    // Initialize with Home Page
-    goToHome();
 </script>
+
 </body>
 </html>

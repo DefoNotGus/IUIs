@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Preferences</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+    }
+    nav {
+        background-color: #4CAF50;
+        padding: 10px;
+        text-align: center;
+    }
+    nav a {
+        color: white;
+        text-decoration: none;
+        margin: 0 15px;
+        font-size: 18px;
+    }
+    nav a:hover {
+        text-decoration: underline;
+    }
+    #app {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .container {
+        padding: 20px;
+        text-align: center;
+    }
+    button {
+        margin: 10px;
+        padding: 10px 20px;
+        font-size: 1em;
+        cursor: pointer;
+    }
+    #sampleText {
+        font-size: 16px;
+    }
+    #imageAdjuster img {
+        width: 300px;
+        height: auto;
+        transition: width 0.3s ease;
+    }
+    .btn-customise {
+        padding: 10px 15px;
+        font-size: 12px;
+    }
+    .layout-options div {
+        display: inline-block;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin: 10px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav>
+    <a href="#" onclick="goToHome()">Home</a>
+    <a href="#" onclick="goToAim()">Aim</a>
+    <a href="#" onclick="goToContact()">Contact Me</a>
+</nav>
+
+<div id="app">
+    <!-- Dynamic content will be injected here -->
+</div>
+
+<script>
+    // State to store user preferences
+    const userPreferences = {
+        fontSize: 16,
+        imageSize: 300,
+        buttonCustomisation: {
+            backgroundColor: "#4CAF50",
+            textColor: "#FFFFFF",
+            size: "medium",
+        },
+        selectedLayout: 'Layout 1'
+    };
+
+    // Pages
+    const homePage = `
+        <div class="container">
+            <h1>Welcome to User Preferences!</h1>
+            <p>This test will help you customize and select your preferences for various web elements.</p>
+            <button onclick="goToFontAdjuster()">Start</button>
+        </div>
+    `;
+
+    const aimPage = `
+        <div class="container">
+            <h1>Our Aim</h1>
+            <p>To understand user preferences for web elements, including font size, image size, button styling, and layout selection.</p>
+            <button onclick="goToHome()">Back to Home</button>
+        </div>
+    `;
+
+    const contactPage = `
+        <div class="container">
+            <h1>Contact Me</h1>
+            <p>If you have any questions or suggestions, feel free to reach out!</p>
+            <p>Email: example@example.com</p>
+            <button onclick="goToHome()">Back to Home</button>
+        </div>
+    `;
+
+    const fontAdjuster = `
+        <div class="container">
+            <h1>Font Size: <span id="fontSizeDisplay">16</span></h1>
+            <p id="sampleText">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <button onclick="increaseFont()">Increase Font</button>
+            <button onclick="decreaseFont()">Decrease Font</button>
+            <button onclick="goToImageAdjuster()">Next</button>
+        </div>
+    `;
+
+    const imageAdjuster = `
+        <div class="container" id="imageAdjuster">
+            <h1>Image Size Adjuster</h1>
+            <img src="sunflowers.jpg" alt="Sample Image" id="adjustableImage">
+            <br>
+            <button onclick="increaseImageSize()">Increase Size</button>
+            <button onclick="decreaseImageSize()">Decrease Size</button>
+            <button onclick="goToButtonPicker()">Next</button>
+        </div>
+    `;
+
+    const buttonPicker = `
+        <div class="container" id="buttonPicker">
+            <h1>Customise Button</h1>
+            <button id="customButton" class="btn-customise" style="background-color: #4CAF50; color: #FFFFFF;">Sample Button</button>
+            <br>
+            <label>Background Color: <input type="color" id="btnBackgroundColor" value="#4CAF50" onchange="updateButtonBackgroundColor()"></label>
+            <br>
+            <label>Text Color: <input type="color" id="btnTextColor" value="#FFFFFF" onchange="updateButtonTextColor()"></label>
+            <br>
+            <button onclick="goToLayoutPicker()">Next</button>
+        </div>
+    `;
+
+    const layoutPicker = `
+        <div class="container" id="layoutPicker">
+            <h1>Choose a Layout</h1>
+            <div class="layout-options">
+                <div onclick="selectLayout('Layout 1')">Layout 1</div>
+                <div onclick="selectLayout('Layout 2')">Layout 2</div>
+                <div onclick="selectLayout('Layout 3')">Layout 3</div>
+            </div>
+            <button onclick="goToFormPage()">Next</button>
+        </div>
+    `;
+
+    const formPage = `
+        <div class="container">
+            <h1>Submission Page</h1>
+            <p>Here are your preferences:</p>
+            <ul>
+                <li>Font Size: ${userPreferences.fontSize}px</li>
+                <li>Image Size: ${userPreferences.imageSize}px</li>
+                <li>Button Background Color: ${userPreferences.buttonCustomisation.backgroundColor}</li>
+                <li>Button Text Color: ${userPreferences.buttonCustomisation.textColor}</li>
+                <li>Chosen Layout: ${userPreferences.selectedLayout}</li>
+            </ul>
+            <iframe src="https://docs.google.com/forms/d/e/your-google-form-id-here/viewform" width="100%" height="600px"></iframe>
+        </div>
+    `;
+
+    // Navigation Functions
+    function goToHome() {
+        document.getElementById('app').innerHTML = homePage;
+    }
+
+    function goToAim() {
+        document.getElementById('app').innerHTML = aimPage;
+    }
+
+    function goToContact() {
+        document.getElementById('app').innerHTML = contactPage;
+    }
+
+    function goToFontAdjuster() {
+        document.getElementById('app').innerHTML = fontAdjuster;
+    }
+
+    function goToImageAdjuster() {
+        document.getElementById('app').innerHTML = imageAdjuster;
+    }
+
+    function goToButtonPicker() {
+        document.getElementById('app').innerHTML = buttonPicker;
+    }
+
+    function goToLayoutPicker() {
+        document.getElementById('app').innerHTML = layoutPicker;
+    }
+
+    function goToFormPage() {
+        document.getElementById('app').innerHTML = formPage;
+    }
+
+    // Font Adjuster Functions
+    function increaseFont() {
+        userPreferences.fontSize += 2;
+        updateFontSize();
+    }
+
+    function decreaseFont() {
+        userPreferences.fontSize -= 2;
+        updateFontSize();
+    }
+
+    function updateFontSize() {
+        document.getElementById('sampleText').style.fontSize = `${userPreferences.fontSize}px`;
+        document.getElementById('fontSizeDisplay').textContent = userPreferences.fontSize;
+    }
+
+    // Image Adjuster Functions
+    function increaseImageSize() {
+        userPreferences.imageSize += 20;
+        updateImageSize();
+    }
+
+    function decreaseImageSize() {
+        userPreferences.imageSize -= 20;
+        updateImageSize();
+    }
+
+    function updateImageSize() {
+        document.getElementById('adjustableImage').style.width = `${userPreferences.imageSize}px`;
+    }
+
+    // Button Picker Functions
+    function updateButtonBackgroundColor() {
+        const color = document.getElementById('btnBackgroundColor').value;
+        userPreferences.buttonCustomisation.backgroundColor = color;
+        document.getElementById('customButton').style.backgroundColor = color;
+    }
+
+    function updateButtonTextColor() {
+        const color = document.getElementById('btnTextColor').value;
+        userPreferences.buttonCustomisation.textColor = color;
+        document.getElementById('customButton').style.color = color;
+    }
+
+    // Layout Picker Functions
+    function selectLayout(layout) {
+        userPreferences.selectedLayout = layout;
+        alert(`You selected ${layout}`);
+    }
+
+    // Initialize with Home Page
+    goToHome();
+</script>
+</body>
+</html>
